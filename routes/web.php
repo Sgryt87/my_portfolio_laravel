@@ -15,11 +15,13 @@ Route::get('/', function () {
     return view("home");
 });
 
-Route::get('/admin/works', function () {
-    return view("portfoliolist");
-});
+//Route::get('/admin/projects', function () {
+//    return view("portfoliolist");
+//});
 
 Route::get('/admin/profile', function () {
     return view("profile");
 });
+
+Route::resource('admin/projects', 'ProjectsController');
 
