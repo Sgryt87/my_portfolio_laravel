@@ -26,15 +26,14 @@
                             <td>
                                 <img width="100px" src="{{ asset('../storage/app/public/images/' .$project->image) }}"
                                      alt="{{$project->title}}"></td>
-                            <td>{{$project->created_at}}</td>
-                            <td>{{$project->updated_at}}</td>
+                            <td>{{ date('M j, Y h:ia', strtotime($project->created_at)) }}</td>
+                            <td>{{ date('M j, Y h:ia', strtotime($project->updated_at)) }}</td>
                             <td><a href="{{url('/admin/projects/' . $project->id . '/edit')}}" class="btn
                             btn-default">Edit</a></td>
                             <td>
                                 {!!Form::open(['action' => ['ProjectsController@destroy', $project->id], 'method' => 'POST'])!!}
                                 {{Form::hidden('_method', 'DELETE')}}
                                 {{Form::submit('Delete', ['class' => 'btn btn-danger'])}}
-
                             </td>
                         </tr>
                     @endforeach
