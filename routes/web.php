@@ -22,6 +22,6 @@ Route::get('/', function () {
 Route::get('/admin/profile', function () {
     return view("profile");
 });
-
+Route::get('admin/search', 'SearchController@index');
 Route::resource('admin/projects', 'ProjectsController');
 
