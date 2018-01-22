@@ -10,6 +10,11 @@ use Symfony\Component\Finder\Finder;
 
 class ProjectsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['find']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +22,7 @@ class ProjectsController extends Controller
      */
     public function index()
     {
-        $projects = Project::orderBy('created_at','asc')->paginate(10);
+        $projects = Project::orderBy('created_at', 'asc')->paginate(10);
         return view('admin.projects.index')->with('projects', $projects);
     }
 
@@ -34,7 +39,7 @@ class ProjectsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -45,7 +50,7 @@ class ProjectsController extends Controller
             'image' => 'image'
         ]);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             // Get filename with the extension
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename
@@ -53,7 +58,7 @@ class ProjectsController extends Controller
             // Get just ext
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
         }
@@ -69,7 +74,7 @@ class ProjectsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -81,7 +86,7 @@ class ProjectsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -93,8 +98,8 @@ class ProjectsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -107,7 +112,7 @@ class ProjectsController extends Controller
 
         $project = Project::find($id);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             // Get filename with the extension
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename
@@ -115,7 +120,7 @@ class ProjectsController extends Controller
             // Get just ext
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
             unlink(storage_path('app/public/images/' . $project->image));
@@ -131,7 +136,7 @@ class ProjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -140,5 +145,19 @@ class ProjectsController extends Controller
         unlink(storage_path('app/public/images/' . $project->image));
         $project->delete();
         return redirect('admin/projects')->with('success', 'Project Deleted');
+    }
+
+
+    public function search()
+    {
+        return view('admin.projects.search');
+    }
+
+    public function find(Request $request)
+    {
+        $value = $request->text;
+        if (!empty($value)) {
+            return Project::where('title', 'LIKE', "%$value%")->get();
+        } else return [];
     }
 }

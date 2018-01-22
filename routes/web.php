@@ -11,17 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view("home");
-});
-
-//Route::get('/admin/projects', function () {
-//    return view("portfoliolist");
-//});
-
-Route::get('/admin/profile', function () {
-    return view("profile");
-});
-Route::get('admin/search', 'SearchController@index');
+Route::get('/', 'HomeController@index');
+//Route::get('admin/profile', 'ProfileController@index');
+//Route::post('admin/profile/update', 'ProfileController@update');
+Route::get('admin/projects/search', 'ProjectsController@search');
 Route::resource('admin/projects', 'ProjectsController');
+Route::resource('admin/profile', 'ProfileController');
+Auth::routes();
+
 
